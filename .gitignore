@@ -1,6 +1,7 @@
 node_modules
 .env
 coverage
-note.txt
 dev.txt
-dev2.txt
+note.txt
+note2.txt
+note3.txt
