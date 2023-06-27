@@ -11,7 +11,7 @@ env:
   # DEPLOY_HOST: '95.111.195.225'
   # DEPLOY_USER: root
   # DEPLOY_PATH: ~/project-cicd-sec-dev
-  NODE_VERSION: '18.17.0'
+  NODE_VERSION: '18.x'
   # PM2_NAME: 'backend-dev'
   # PM2_ENV: 'PORT: 4000'
   IS_MEND: false
