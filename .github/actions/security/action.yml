@@ -1,0 +1,86 @@
+name: security-action
+description: 'Add Sonarqube and ZAP in the pipelines'
+
+inputs:
+  is-sonar:
+    description: 'Whether Sonarqube scan will be run'
+    required: true
+    default: 'false'
+  sonar-token:
+    description: 'The project token'
+    required: true
+    default: ''
+  sonar-host-url:
+    description: 'The Sonarqube server URL'
+    required: true
+    default: 'http://sq.xcidic.com'
+  sonar-base-dir:
+    description: 'The analysis base directory'
+    required: true
+    default: '.'
+  
+  is-zap:
+    description: 'Whether ZAP scan will be run'
+    required: true
+    default: 'false'
+  zap-target:
+    description: 'The target URL'
+    required: true
+    default: ''
+  zap-token:
+    description: 'The Github token to create issue'
+    required: true
+    default: ''
+  zap-issue:
+    description: 'Value for allow_issue_writing'
+    required: true
+    default: 'false'
+  zap-issue-title:
+    description: 'Value for issue_title'
+    required: true
+    default: ''
+  # @TODO: custom rules
+
+outputs:
+  sonar-validation: 
+    value: ${{ steps.sonar-validation.outputs.message }}
+    description: Sonar input validation message
+  sonar-process:
+    value: ${{ steps.sonar-process.outputs.message }}
+    description: Sonar process message
+
+runs:
+  using: composite
+  steps:
+    - if: ${{ fromJSON(inputs.is-sonar) && ( inputs.sonar-token == '' || inputs.sonar-host-url == '' ) }}
+      name: Validate Sonar input
+      id: sonar-validation
+      shell: bash
+      run: |
+        echo "::set-output name=status::fail"
+        echo "::set-output name=message::Sonar input parameters is invalid"
+    - if: ${{ fromJSON(inputs.is-sonar) && steps.sonar-validation.outputs.status != 'fail' }}
+      name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        SONAR_HOST_URL: ${{ inputs.sonar-host-url }}
+      with:
+        projectBaseDir: ${{ inputs.sonar-base-dir }}
+        #   args: >
+        #     -Dsonar.python.coverage.reportPaths=coverage.xml
+        #     -Dsonar.tests=tests/
+        #     -Dsonar.verbose=true
+    - if: ${{ fromJSON(inputs.is-sonar) && failure() }}
+      name: SonarQube Scan
+      id: sonar-process
+      shell: bash
+      run: echo "::set-output name=message::Sonar scanner failed"
+    - if: ${{ fromJSON(inputs.is-zap) && inputs.zap-target != ''}}
+      name: ZAP Scan
+      uses: zaproxy/action-baseline@v0.7.0
+      with:
+        token: ${{ inputs.zap-token }}
+        target: ${{ inputs.zap-target }}
+        allow_issue_writing: ${{ inputs.zap-issue }}
+        issue_title: ${{ inputs.zap-issue-title }}

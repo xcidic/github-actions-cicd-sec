@@ -1,0 +1,104 @@
+name: NodeJs CI-CD Security
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+env:
+  # IS_DEPLOY: false
+  # DEPLOY_HOST: '95.111.195.225'
+  # DEPLOY_USER: root
+  # DEPLOY_PATH: ~/project-cicd-sec-dev
+  NODE_VERSION: '18.17.0'
+  # PM2_NAME: 'backend-dev'
+  # PM2_ENV: 'PORT: 4000'
+  IS_MEND: false
+  MEND_PRODUCT: cicd-sec
+  MEND_PROJECT: project-cicd-sec-dev
+  MEND_FOLLOW_POLICY: false
+  MEND_IGNORE_RESULT: false
+  SONAR_HOST_URL: 'http://sq.xcidic.com'
+  ZAP_TARGET: 'https://dev-api.xcidic.com'
+  ZAP_ISSUE: false
+  ZAP_ISSUE_TITLE: 'ZAP CICD-SEC'
+  ACTIONS_STEP_DEBUG: true
+
+jobs:
+  build-testing:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout Action Base
+        uses: actions/checkout@v3
+        with:
+          repository: xcidic/cao-actions-base
+          ref: v4.8
+          token: ${{ secrets.AGENT_TOKEN }}
+          path: ./.github/actions/base
+      - name: Setup Base
+        uses: ./.github/actions/base
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: yarn
+      - run: yarn test
+  
+  scan-tool:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Scan Actions
+        id: scan
+        uses: './.github/actions/security'
+        with:
+          is-sonar: true
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          sonar-host-url: ${{ env.SONAR_HOST_URL }}
+      - name: Security Actions Output
+        if: ${{ always() }}
+        run: |
+          echo "Sonar validation error: ${{ steps.security.outputs.sonar-validation }}"
+          echo "Sonar process error: ${{ steps.security.outputs.sonar-process }}"
+    
+  # deploy:
+  #   needs: [build-testing, scan-tool]
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Deploy using ssh
+  #       uses: appleboy/ssh-action@v0.1.10
+  #       with:
+  #         host: ${{ secrets.DEPLOY_HOST }}
+  #         username: ${{ secrets.DEPLOY_USER }}
+  #         key: ${{ secrets.PRIVATE_KEY }}
+  #         port: 22
+  #         script: |
+  #           cd ~/apps/github-action3
+  #           git pull origin dev
+  #           git status
+  #           yarn
+  #           pm2 restart src/index.js
+  
+  # zap-tool:
+  #   runs-on: ubuntu-20.04
+  #   needs: deploy
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: ZAP Actions
+  #       id: zap
+  #       uses: './.github/actions/security'
+  #       with:
+  #         is-zap: 'false'
+  #         zap-token: ${{ secrets.GITHUB_TOKEN }}
+  #         zap-target: ${{ env.ZAP_TARGET }}
+  #         zap-issue: ${{ env.ZAP_ISSUE }}
+  #         zap-issue-title: ${{ env.ZAP_ISSUE_TITLE }}
