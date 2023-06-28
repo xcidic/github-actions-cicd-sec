@@ -44,6 +44,8 @@ jobs:
   mend-scanning:
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Mend Scanning
         uses: ./.github/actions/base
         with:
@@ -53,6 +55,7 @@ jobs:
           mend-host-key: ${{ secrets.MEND_HOST_KEY }}
           mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
           mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
+          actions/checkout Default: ${{ github.repository }} 
 
   sonarqube-scanning:
     runs-on: ubuntu-20.04
