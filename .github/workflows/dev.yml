@@ -56,10 +56,6 @@ jobs:
           mend-host-key: ${{ secrets.MEND_HOST_KEY }}
           mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
           mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
-      - run: |
-          echo Downloading Mend CLI
-          curl -LJO https://downloads.mend.io/production/unified/latest/linux_amd64/mend && chmod +x mend
-          echo Start Mend CLI scan
 
   sonarqube-scanning:
     runs-on: ubuntu-20.04
