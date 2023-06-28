@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: xcidic/cao-actions-base
-          ref: v4.7
+          ref: v4.8
           token: ${{ secrets.AGENT_TOKEN }}
           path: ./.github/actions/base
       - name: Mend Scanning
