@@ -32,6 +32,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Mend Scanning
+        uses: ./.github/actions/base
+        with:
+          is-mend: ${{ env.IS_MEND }}
+          mend-product: ${{ env.MEND_PRODUCT }}
+          mend-project: ${{ env.MEND_PROJECT }}
+          mend-host-key: ${{ secrets.MEND_HOST_KEY }}
+          mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
+          mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
