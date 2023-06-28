@@ -32,15 +32,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Mend Scanning
-        uses: ./.github/actions/base
-        with:
-          is-mend: ${{ env.IS_MEND }}
-          mend-product: ${{ env.MEND_PRODUCT }}
-          mend-project: ${{ env.MEND_PROJECT }}
-          mend-host-key: ${{ secrets.MEND_HOST_KEY }}
-          mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
-          mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
@@ -50,7 +41,22 @@ jobs:
         run: yarn
       - run: yarn test
   
-  scan-tool:
+  mend-scanning:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Mend Scanning
+        uses: ./.github/actions/base
+        with:
+          is-mend: ${{ env.IS_MEND }}
+          mend-product: ${{ env.MEND_PRODUCT }}
+          mend-project: ${{ env.MEND_PROJECT }}
+          mend-host-key: ${{ secrets.MEND_HOST_KEY }}
+          mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
+          mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
+
+  sonarqube-scanning:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -71,7 +77,7 @@ jobs:
           echo "Sonar process error: ${{ steps.security.outputs.sonar-process }}"
     
   # deploy:
-  #   needs: [build-testing, scan-tool]
+  #   needs: [build-testing, mend-scanning, sonarqube-scanning]
   #   runs-on: ubuntu-20.04
   #   steps:
   #     - name: Deploy using ssh
