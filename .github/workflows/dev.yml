@@ -14,9 +14,9 @@ env:
   NODE_VERSION: '18.x'
   # PM2_NAME: 'backend-dev'
   # PM2_ENV: 'PORT: 4000'
-  IS_MEND: false
-  MEND_PRODUCT: cicd-sec
-  MEND_PROJECT: project-cicd-sec-dev
+  IS_MEND: true
+  MEND_PRODUCT: github-actions-cicd-sec
+  MEND_PROJECT: github-actions-cicd-sec
   MEND_FOLLOW_POLICY: false
   MEND_IGNORE_RESULT: false
   SONAR_HOST_URL: 'http://sq.xcidic.com'
