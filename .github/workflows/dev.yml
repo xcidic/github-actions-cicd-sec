@@ -55,10 +55,6 @@ jobs:
           path: ./.github/actions/basecl
       - name: Mend Scanning
         uses: ./.github/actions/base
-      - run: |
-          git config --global user.name Diki-xcidic
-          git config --global user.email diki@xcidic.com
-          git remote set-url origin https://Diki-xcidic:${{ secrets.AGENT_TOKEN }}@github.com/github-actions-cicd-sec.git
         with:
           is-mend: ${{ env.IS_MEND }}
           mend-product: ${{ env.MEND_PRODUCT }}
@@ -66,6 +62,10 @@ jobs:
           mend-host-key: ${{ secrets.MEND_HOST_KEY }}
           mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
           mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
+      - run: |
+          git config --global user.name Diki-xcidic
+          git config --global user.email diki@xcidic.com
+          git remote set-url origin https://Diki-xcidic:${{ secrets.AGENT_TOKEN }}@github.com/github-actions-cicd-sec.git
       
 
   # sonarqube-scanning:
