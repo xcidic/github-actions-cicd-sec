@@ -46,14 +46,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Configure Git
+        run: |
+          git config --global user.name Diki-xcidic
+          git config --global user.email diki@xcidic.com
+      - name: Authenticate with GitHub
+        run: |
+          git remote set-url origin https://Diki-xcidic:${{ secrets.AGENT_TOKEN }}@github.com/github-actions-cicd-sec.git
       - name: Checkout Action Base
         uses: actions/checkout@v3
         with:
           repository: xcidic/cao-actions-base
           ref: v4.8
           token: ${{ secrets.AGENT_TOKEN }}
-          username: Diki-xcidic
-          path: ./.github/actions/base
+          path: ./.github/actions/basecl
       - name: Mend Scanning
         uses: ./.github/actions/base
         with:
