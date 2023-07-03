@@ -52,7 +52,6 @@ jobs:
           repository: xcidic/cao-actions-base
           ref: v4.8
           token: ${{ secrets.AGENT_TOKEN }}
-          username: xcidic
           path: ./.github/actions/basecl
       - name: Mend Scanning
         uses: ./.github/actions/base
