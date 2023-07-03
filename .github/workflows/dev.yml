@@ -26,35 +26,44 @@ env:
   ACTIONS_STEP_DEBUG: true
 
 jobs:
-  build-testing:
+  build-deploy:
     runs-on: ubuntu-20.04
-    timeout-minutes: 20
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Checkout Action Base
         uses: actions/checkout@v3
         with:
           repository: xcidic/cao-actions-base
-          ref: v4.8
+          ref: v4.7
           token: ${{ secrets.AGENT_TOKEN }}
-          path: ./.github/actions/basecl
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn
-      - run: yarn test
-      
-      - name: Mend Scanning
+          path: ./.github/actions/base
+      - name: Setup Base
         uses: ./.github/actions/base
         with:
+          node-version: ${{ env.NODE_VERSION }}
+          pm2-args: start:prod
+          pm2-env: ${{ env.PM2_ENV }}
+          pm2-name: ${{ env.PM2_NAME }}
+          is-deploy: ${{ env.IS_DEPLOY }}
+          deploy-host: ${{ env.DEPLOY_HOST }}
+          deploy-host-key: ${{ secrets.DEPLOY_HOST_KEY_DEV }}
+
           is-mend: ${{ env.IS_MEND }}
           mend-product: ${{ env.MEND_PRODUCT }}
           mend-project: ${{ env.MEND_PROJECT }}
           mend-host-key: ${{ secrets.MEND_HOST_KEY }}
           mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
           mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
+
+      - run: yarn install
+      - run: yarn test
+      - if: ${{ fromJSON(env.IS_DEPLOY) }}
+        run: |
+          echo -e "${{ secrets.DEV_ENV }}" > .env
+          yarn build
+          rsync -avzrut --delete-delay --exclude .git . $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+          ssh $DEPLOY_USER@$DEPLOY_HOST 'cd ${{ env.DEPLOY_PATH }} && pm2 startOrReload ecosystem.config.cjs'
       
   # sonarqube-scanning:
   #   runs-on: ubuntu-20.04
