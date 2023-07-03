@@ -61,7 +61,8 @@ jobs:
           mend-project: ${{ env.MEND_PROJECT }}
           mend-host-key: ${{ secrets.MEND_HOST_KEY }}
           mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
-          mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }} 
+          mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
+          repository: ${{ github.repository }}
 
   # sonarqube-scanning:
   #   runs-on: ubuntu-20.04
