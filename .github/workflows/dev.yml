@@ -40,8 +40,7 @@ jobs:
       - name: Install dependencies
         run: yarn
       - run: yarn test
-      - name: Mend Scanning
-        uses: ./.github/actions/base
+      - name: Mend CLI Scan
         with:
           #SCA
           MEND_EMAIL: ${{secrets.MEND_SCA_EMAIL}}
@@ -51,11 +50,11 @@ jobs:
           # MEND_SAST_SERVER_URL: https://saas.mend.io/sast
           # MEND_SAST_API_TOKEN: ${{secrets.MEND_SAST_API}}
           # MEND_SAST_ORGANIZATION: ${{secrets.MEND_SAST_ORGANIZATION}}
-      - run: |
+        run: |
           echo Downloading Mend CLI
           curl -LJO https://downloads.mend.io/production/unified/latest/linux_amd64/mend && chmod +x mend
           echo Start Mend CLI scan
-          ./mend sca -u  
+          ./mend sca -u
 
   # sonarqube-scanning:
   #   runs-on: ubuntu-20.04
