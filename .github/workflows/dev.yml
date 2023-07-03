@@ -46,8 +46,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          repository: ${{ github.repository }}
+      - uses: ./.github/actions/base
       - name: Checkout Action Base
         uses: actions/checkout@v3
         with:
@@ -65,25 +64,25 @@ jobs:
           mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
           mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }}
       
-  sonarqube-scanning:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Scan Actions
-        id: scan
-        uses: './.github/actions/security'
-        with:
-          is-sonar: true
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          sonar-host-url: ${{ env.SONAR_HOST_URL }}
-      - name: Security Actions Output
-        if: ${{ always() }}
-        run: |
-          echo "Sonar validation error: ${{ steps.security.outputs.sonar-validation }}"
-          echo "Sonar process error: ${{ steps.security.outputs.sonar-process }}"
+  # sonarqube-scanning:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Scan Actions
+  #       id: scan
+  #       uses: './.github/actions/security'
+  #       with:
+  #         is-sonar: true
+  #         sonar-token: ${{ secrets.SONAR_TOKEN }}
+  #         sonar-host-url: ${{ env.SONAR_HOST_URL }}
+  #     - name: Security Actions Output
+  #       if: ${{ always() }}
+  #       run: |
+  #         echo "Sonar validation error: ${{ steps.security.outputs.sonar-validation }}"
+  #         echo "Sonar process error: ${{ steps.security.outputs.sonar-process }}"
     
   # deploy:
   #   needs: [build-testing, mend-scanning, sonarqube-scanning]
