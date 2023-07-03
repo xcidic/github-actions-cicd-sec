@@ -44,9 +44,6 @@ jobs:
   mend-scanning:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: ./.github/actions/base
       - name: Checkout Action Base
         uses: actions/checkout@v3
         with:
