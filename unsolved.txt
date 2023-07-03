@@ -26,36 +26,43 @@ env:
   ACTIONS_STEP_DEBUG: true
 
 jobs:
-  build-testing:
+  # build-testing:
+  #   runs-on: ubuntu-20.04
+  #   timeout-minutes: 20
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Use Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'yarn'
+  #     - name: Install dependencies
+  #       run: yarn
+  #     - run: yarn test
+  
+  mend-scanning:
     runs-on: ubuntu-20.04
-    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+      - name: Checkout Action Base
+        uses: actions/checkout@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn
-      - run: yarn test
+          repository: xcidic/cao-actions-base
+          ref: v4.8
+          lfs: true
+          token: ${{ secrets.AGENT_TOKEN }}
+          path: ./.github/actions/basecl
       - name: Mend Scanning
         uses: ./.github/actions/base
         with:
-          #SCA
-          MEND_EMAIL: ${{secrets.MEND_SCA_EMAIL}}
-          MEND_USER_KEY: ${{secrets.MEND_SCA_USERKEY}}
-          MEND_URL: https://saas.mend.io
-          #SAST
-          # MEND_SAST_SERVER_URL: https://saas.mend.io/sast
-          # MEND_SAST_API_TOKEN: ${{secrets.MEND_SAST_API}}
-          # MEND_SAST_ORGANIZATION: ${{secrets.MEND_SAST_ORGANIZATION}}
-      - run: |
-          echo Downloading Mend CLI
-          curl -LJO https://downloads.mend.io/production/unified/latest/linux_amd64/mend && chmod +x mend
-          echo Start Mend CLI scan
-          ./mend sca -u  
+          is-mend: ${{ env.IS_MEND }}
+          mend-product: ${{ env.MEND_PRODUCT }}
+          mend-project: ${{ env.MEND_PROJECT }}
+          mend-host-key: ${{ secrets.MEND_HOST_KEY }}
+          mend-follow-policy: ${{ env.MEND_FOLLOW_POLICY }}
+          mend-ignore-result: ${{ env.MEND_IGNORE_RESULT }} 
 
   # sonarqube-scanning:
   #   runs-on: ubuntu-20.04
@@ -78,7 +85,7 @@ jobs:
   #         echo "Sonar process error: ${{ steps.security.outputs.sonar-process }}"
     
   # deploy:
-  #   needs: [build-testing, sonarqube-scanning]
+  #   needs: [build-testing, mend-scanning, sonarqube-scanning]
   #   runs-on: ubuntu-20.04
   #   steps:
   #     - name: Deploy using ssh
