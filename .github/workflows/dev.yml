@@ -26,24 +26,20 @@ env:
   ACTIONS_STEP_DEBUG: true
 
 jobs:
-  # build-testing:
-  #   runs-on: ubuntu-20.04
-  #   timeout-minutes: 20
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Use Node.js ${{ env.NODE_VERSION }}
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ env.NODE_VERSION }}
-  #         cache: 'yarn'
-  #     - name: Install dependencies
-  #       run: yarn
-  #     - run: yarn test
-  
-  mend-scanning:
+  build-testing:
     runs-on: ubuntu-20.04
+    timeout-minutes: 20
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn
+      - run: yarn test
       - name: Checkout Action Base
         uses: actions/checkout@v3
         with:
