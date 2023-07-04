@@ -40,6 +40,20 @@ jobs:
       - name: Install dependencies
         run: yarn
       - run: yarn test
+
+  mend-scanning:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn
       - name: Mend CLI Scan
         with:
           #SCA
@@ -55,7 +69,7 @@ jobs:
           curl -LJO https://downloads.mend.io/production/unified/latest/linux_amd64/mend && chmod +x mend
           echo Start Mend CLI scan
           ./mend sca -u
-      
+
   # sonarqube-scanning:
   #   runs-on: ubuntu-20.04
   #   steps:
