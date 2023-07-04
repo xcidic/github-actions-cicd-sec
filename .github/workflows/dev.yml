@@ -42,30 +42,49 @@ jobs:
       - run: yarn test
 
   mend-scanning:
+    env:
+      WS_APIKEY: ${{secrets.MEND_SCA_APIKEY}}
+      WS_USERKEY: ${{secrets.MEND_SCA_USERKEY}}
+      WS_WSS_URL: https://saas.mend.io/agent
     runs-on: ubuntu-20.04
-    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Mend CLI Scan
-        env:
-          #SCA
-          MEND_EMAIL: ${{secrets.MEND_SCA_EMAIL}}
-          MEND_USER_KEY: ${{secrets.MEND_SCA_USERKEY}}
-          MEND_URL: https://saas.mend.io
-          #SAST
-          # MEND_SAST_SERVER_URL: https://saas.mend.io/sast
-          # MEND_SAST_API_TOKEN: ${{secrets.MEND_SAST_API}}
-          # MEND_SAST_ORGANIZATION: ${{secrets.MEND_SAST_ORGANIZATION}}
+      - name: Set up
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
-      - run: |
-          echo Downloading Mend CLI
-          curl -LJO https://downloads.mend.io/production/unified/latest/linux_amd64/mend && chmod +x mend
-          echo Start Mend CLI scan
-          ./mend sca -u
+      - name: Install dependencies
+        run: yarn
+      - name: Mend Unified Agent Scan
+        env:
+          WS_PRODUCTNAME: ${{github.event.repository.name}}
+          WS_PROJECTNAME: ${{github.event.repository.name}}_${{github.ref_name}}
+          WS_GENERATEPROJECTDETAILSJSON: true
+        run: |
+          echo Downloading Mend Unified Agent
+          curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+          if [[ "$(curl -sL https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar.sha256)" != "$(sha256sum wss-unified-agent.jar)" ]] ; then
+            echo "Integrity Check Failed"
+          else
+            echo "Integrity Check Passed"
+            echo Starting Unified Agent Scan
+            java -jar wss-unified-agent.jar
+          fi
+      - name: 'Upload WhiteSource folder'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Mend
+          path: whitesource
+          retention-days: 14
+      - name: 'Upload Mend folder if failure'
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: Mend
+          path: whitesource
+          retention-days: 14
 
   # sonarqube-scanning:
   #   runs-on: ubuntu-20.04
