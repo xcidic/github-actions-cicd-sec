@@ -45,7 +45,7 @@ jobs:
     env:
       WS_APIKEY: ${{secrets.MEND_SCA_APIKEY}}
       WS_USERKEY: ${{secrets.MEND_SCA_USERKEY}}
-      WS_WSS_URL: https://saas-eu.whitesourcesoftware.com
+      WS_WSS_URL: https://saas-eu.whitesourcesoftware.com/agent
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
