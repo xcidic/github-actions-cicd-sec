@@ -7,18 +7,7 @@ on:
     branches: [dev]
 
 env:
-  # IS_DEPLOY: false
-  # DEPLOY_HOST: '95.111.195.225'
-  # DEPLOY_USER: root
-  # DEPLOY_PATH: ~/project-cicd-sec-dev
   NODE_VERSION: '18.x'
-  # PM2_NAME: 'backend-dev'
-  # PM2_ENV: 'PORT: 4000'
-  IS_MEND: true
-  MEND_PRODUCT: github-actions-cicd-sec
-  MEND_PROJECT: github-actions-cicd-sec
-  MEND_FOLLOW_POLICY: false
-  MEND_IGNORE_RESULT: false
   SONAR_HOST_URL: 'http://sq.xcidic.com'
   ZAP_TARGET: 'https://dev-api.xcidic.com'
   ZAP_ISSUE: false
@@ -124,7 +113,7 @@ jobs:
   #           yarn
   #           pm2 restart src/index.js
   
-  # zap-tool:
+  # zap-scanning:
   #   runs-on: ubuntu-20.04
   #   needs: deploy
   #   steps:

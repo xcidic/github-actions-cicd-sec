@@ -1,0 +1,5 @@
+https://github.com/mend-toolkit/mend-examples/blob/main/CI-CD/GitHub/Mend%20CLI/GitHub.yaml
+
+https://github.com/mend-toolkit/mend-examples/blob/main/CI-CD/GitHub/Unified%20Agent/GitHub.yml
+
+https://github.com/actions/checkout/issues/692
