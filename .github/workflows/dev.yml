@@ -47,15 +47,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn
       - name: Mend CLI Scan
-        with:
+        env:
           #SCA
           MEND_EMAIL: ${{secrets.MEND_SCA_EMAIL}}
           MEND_USER_KEY: ${{secrets.MEND_SCA_USERKEY}}
@@ -64,7 +57,11 @@ jobs:
           # MEND_SAST_SERVER_URL: https://saas.mend.io/sast
           # MEND_SAST_API_TOKEN: ${{secrets.MEND_SAST_API}}
           # MEND_SAST_ORGANIZATION: ${{secrets.MEND_SAST_ORGANIZATION}}
-        run: |
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      - run: |
           echo Downloading Mend CLI
           curl -LJO https://downloads.mend.io/production/unified/latest/linux_amd64/mend && chmod +x mend
           echo Start Mend CLI scan
