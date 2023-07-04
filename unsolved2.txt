@@ -41,7 +41,7 @@ jobs:
         run: yarn
       - run: yarn test
       - name: Mend CLI Scan
-        with:
+        env:
           #SCA
           MEND_EMAIL: ${{secrets.MEND_SCA_EMAIL}}
           MEND_USER_KEY: ${{secrets.MEND_SCA_USERKEY}}
