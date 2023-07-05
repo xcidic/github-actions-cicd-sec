@@ -14,7 +14,7 @@ The workflow is designed as follows:
 
 2. **Mend Scanning**
 
-   - The `mend-scanning` job performs security scanning using the "Mend" tool.
+   - The `mend-scanning` job uses the "Mend" tool for security scanning, using the Unified Agent method. Check `Mend.Unified-Agent.txt` for more details.
    - It runs in parallel with the `build-testing` and `sonarqube-scanning` jobs.
    - Upon completion of all parallel jobs, the workflow proceeds to the next step.
 

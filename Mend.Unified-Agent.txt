@@ -1,0 +1,30 @@
+The scanning with the Unified Agent in Mend includes both SCA and SAST. 
+SCA stands for Software Composition Analysis, and SAST stands for Static Application Security Testing. 
+SCA is the process of identifying, assessing, and managing the security risks associated with the software 
+components used in an application. SAST is the process of analyzing source code to find potential security vulnerabilities.
+
+The Unified Agent scans your codebase for open source components and their licenses. 
+This information can then be used to identify potential security risks, such as:
+
+* Vulnerabilities in open source components
+* License compliance issues
+* Security misconfigurations
+
+The Unified Agent can perform both SCA and SAST scanning. 
+This makes it a powerful tool for organizations that want to improve the security of their software.
+
+Here is a table that summarizes the differences between SCA and SAST:
+
+|                       SCA                                         |                           SAST                                    | 
+| Analyzes software components                                      | Analyzes source code                                              |
+| Can identify security risks associated with software components   | Can identify potential security vulnerabilities in source code    |
+| Can be used to identify license compliance issues                 | Can be used to identify security misconfigurations                |
+| Can be performed manually or using automated tools                | Can only be performed using automated tools                       |
+
+
+Here are some additional resources that you may find helpful:
+
+* Overview of the Unified Agent: https://docs.mend.io/en-US/bundle/unified_agent/page/overview_of_the_unified_agent.html
+* Configuring the Unified Agent for Maven: https://docs.mend.io/en-US/bundle/wsk/page/configuring_the_unified_agent_for_maven.html
+* Unified Agent - Docker Image Scan Flow: https://docs.mend.io/en-US/bundle/wsk/page/unified_agent_-_docker_image_scan_flow.html
+* Splitting Unified Agent Scans: https://docs.mend.io/en-US/bundle/wsk/page/unified_agent_-_splitting_unified_agent_scans.html
