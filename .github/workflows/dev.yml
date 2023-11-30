@@ -16,7 +16,7 @@ env:
 
 jobs:
   build-testing:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
       - name: Checkout
@@ -35,7 +35,7 @@ jobs:
       WS_APIKEY: ${{secrets.MEND_SCA_APIKEY}}
       WS_USERKEY: ${{secrets.MEND_SCA_USERKEY}}
       WS_WSS_URL: https://saas-eu.whitesourcesoftware.com/agent
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -74,7 +74,7 @@ jobs:
           retention-days: 14
 
   sonarqube-scanning:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
