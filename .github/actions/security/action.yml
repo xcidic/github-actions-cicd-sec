@@ -78,7 +78,7 @@ runs:
       run: echo "::set-output name=message::Sonar scanner failed"
     - if: ${{ fromJSON(inputs.is-zap) && inputs.zap-target != ''}}
       name: ZAP Scan
-      uses: zaproxy/action-baseline@v0.7.0
+      uses: zaproxy/action-baseline@v0.11.0
       with:
         token: ${{ inputs.zap-token }}
         target: ${{ inputs.zap-target }}
